@@ -58,6 +58,9 @@ class Grid:
     def __setitem__(self, key, value):
         self._grid[key] = value
 
+    def __eq__(self, other):
+        return self._grid == other._grid
+
     def __str__(self):
         return os.linesep.join([' '.join([str(cell) for cell in line]) for line in self._grid])
 
