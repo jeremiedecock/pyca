@@ -52,7 +52,7 @@ class TkGUI:
 
         # GUI parameters ##############
 
-        self.time_step = 500               # in ms
+        self.time_step = 50               # in ms
         self.cell_size = 8                 # in pixels
         self.cell_margin = 1               # in pixels
         self.cell_alive_color = "black"
@@ -219,18 +219,63 @@ if __name__ == '__main__':
     gui = TkGUI()
 
     # Default initial state
-    initial_state = Grid(width=32, height=32)
-    initial_state[0][1] = 1
-    initial_state[1][1] = 1
-    initial_state[2][1] = 1
+    initial_state = Grid(width=48, height=48)
 
-    initial_state[10][1] = 1
-    initial_state[11][1] = 1
-    initial_state[12][1] = 1
+    # First "block"
+    initial_state[5][1] = 1
+    initial_state[6][1] = 1
+    initial_state[5][2] = 1
+    initial_state[6][2] = 1
 
-    initial_state[0][11] = 1
-    initial_state[1][11] = 1
-    initial_state[2][11] = 1
+    # Second "block"
+    initial_state[3][35] = 1
+    initial_state[4][35] = 1
+    initial_state[3][36] = 1
+    initial_state[4][36] = 1
+
+    # First "bullet"
+    initial_state[5][11] = 1
+    initial_state[6][11] = 1
+    initial_state[7][11] = 1
+
+    initial_state[4][12] = 1
+    initial_state[8][12] = 1
+
+    initial_state[3][13] = 1
+    initial_state[9][13] = 1
+
+    initial_state[3][14] = 1
+    initial_state[9][14] = 1
+
+    initial_state[6][15] = 1
+
+    initial_state[4][16] = 1
+    initial_state[8][16] = 1
+
+    initial_state[5][17] = 1
+    initial_state[6][17] = 1
+    initial_state[7][17] = 1
+
+    initial_state[6][18] = 1
+
+    # Second "bullet"
+    initial_state[3][21] = 1
+    initial_state[4][21] = 1
+    initial_state[5][21] = 1
+
+    initial_state[3][22] = 1
+    initial_state[4][22] = 1
+    initial_state[5][22] = 1
+
+    initial_state[2][23] = 1
+    initial_state[6][23] = 1
+
+    initial_state[1][25] = 1
+    initial_state[2][25] = 1
+    initial_state[6][25] = 1
+    initial_state[7][25] = 1
+
+    # Init the canvas
     gui.start(initial_state)
 
     # Launch the main loop
