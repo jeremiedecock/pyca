@@ -38,25 +38,31 @@ import tkinter as tk
 
 class TkGUI:
     def __init__(self):
-
-        # Make widgets
-        # TODO make the window, the canvas, btn open state files and others widgets...
-
-        # GUI parameters
+        # GUI parameters ##############
         self.time_step = 500               # in ms
         self.cell_size = 5                 # in pixels
-        self.cell_margin = 1               # in pixels
-        self.cell_color = "black"
-        self.cell_margin_color = "white"   # canvas background color
+        self.cell_margin = 0               # in pixels
+        self.cell_alive_color = "black"
+        self.cell_dead_color = "white"
+        self.background_color = "white"   # canvas background color
         self.export_canvas = False
 
-        # Make rules
+        # Make widgets ################
+        self.root = tk.Tk()   # TODO
+
+        self.canvas = tk.Canvas(self.root)
+        self.canvas.pack(padx=10, pady=10)
+
+        # TODO btn open state files and others widgets...
+
+        # Make rules ##################
         self.rules = Rules()   # TODO should be parametrized with args to choose the rule
 
-        # Set the initial state
+        # Set the initial state #######
         self.current_state = None
 
-        # Tk event loop (TODO or move it outside the constructor ???)
+        # Tk event loop ###############
+        # TODO or move it outside the constructor ???)
         self.root.mainloop()
 
     def update_state(self):
@@ -68,13 +74,40 @@ class TkGUI:
         self.canvas.after(self.timestep, self.update_state)
 
     def draw_current_state(self):
-        # TODO update self.canvas...
+        # Update self.canvas
+        for idx in range(self.current_state.width):
+            for idy in range(self.current_state.height):
+                cell_state = self.current_state[idy][idx]
+
+                if cell_state == 0:
+                    cell_color = self.cell_dead_color
+                else:
+                    cell_color = self.cell_alive_color
+
+                cell_tag = "{}x{}".format(idx, idy)
+
+                canvas.itemconfig(cell_tag, fill=color)
 
     def start(self, initial_state):
-        # Reset the canvas: dimensions, num squares, ...
-        # TODO
+        # Reset the canvas (dimensions and number of cells)
+        self.canvas.config(width=initial_state.width * self.cell_size,
+                           height=initial_state.height * self.cell_size)
 
+        for idx in range(initial_state.width):
+            for idy in range(initial_state.height):
+                tags = ("cell", "{}x{}".format(idx, idy))
+
+                canvas.create_rectangle(self.cell_size * idx,       # x1
+                                        self.cell_size * idy,       # y1
+                                        self.cell_size * (idx + 1), # x2
+                                        self.cell_size * (idy + 1), # y2
+                                        tag=tags,
+                                        width=self.cell_margin)
+
+        # Update the current state
         self.current_state = initial_state
+
+        # Draw the canvas
         self.draw_current_state()
 
         # Set the next alarm
@@ -86,11 +119,14 @@ class TkGUI:
 
         self.start(initial_state)
 
-def run():
+if __name__ == '__main__':
     gui = TkGUI()
 
-if __name__ == '__main__':
-    main()
+    initial_state = Grid(width=3, height=3)
+    initial_state[0][1] = 1
+    initial_state[1][1] = 1
+    initial_state[2][1] = 1
+    #gui.start(initial_state)
 
 # Ce module utilise les fonctions "métier" suivantes
 # - ca.get_initial_state()
