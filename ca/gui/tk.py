@@ -34,11 +34,24 @@ __all__ = ['TkGUI']
 from ca.rules.conway import Rules
 from ca.grid.grid2d import Grid
 
+import json
+import os.path
+
 import tkinter as tk
+import tkinter.filedialog
 
 class TkGUI:
+    """
+    TODO...
+    """
+
     def __init__(self):
+        """
+        TODO...
+        """
+
         # GUI parameters ##############
+
         self.time_step = 500               # in ms
         self.cell_size = 5                 # in pixels
         self.cell_margin = 0               # in pixels
@@ -48,24 +61,56 @@ class TkGUI:
         self.export_canvas = False
 
         # Make widgets ################
+
         self.root = tk.Tk()   # TODO
 
         self.canvas = tk.Canvas(self.root)
         self.canvas.pack(padx=10, pady=10)
 
-        # TODO btn open state files and others widgets...
+        # Make a menubar ##############
+
+        # Create a toplevel menu
+        menubar = tk.Menu(root)
+
+        # Create a pulldown menu
+        file_menu = tk.Menu(menubar, tearoff=0)
+        file_menu.add_command(label="Open...", command=self.select_state_file)
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=root.quit)
+
+        menubar.add_cascade(label="File", menu=file_menu)
+
+        # Create a pulldown menu
+        help_menu = tk.Menu(menubar, tearoff=0)
+        help_menu.add_command(label="About...", command=callback)
+
+        menubar.add_cascade(label="Help", menu=help_menu)
+
+        # Display the menu
+        # The config method is used to attach the menu to the root window. The
+        # contents of that menu is used to create a menubar at the top of the root
+        # window. There is no need to pack the menu, since it is automatically
+        # displayed by Tkinter.
+        root.config(menu=menubar)
 
         # Make rules ##################
+
         self.rules = Rules()   # TODO should be parametrized with args to choose the rule
 
         # Set the initial state #######
+
         self.current_state = None
 
         # Tk event loop ###############
+
         # TODO or move it outside the constructor ???)
         self.root.mainloop()
 
     def update_state(self):
+        """
+        TODO...
+        """
+
         self.current_state = self.rules.next_state(self.current_state)
 
         self.draw_current_state()
@@ -74,6 +119,10 @@ class TkGUI:
         self.canvas.after(self.timestep, self.update_state)
 
     def draw_current_state(self):
+        """
+        TODO...
+        """
+
         # Update self.canvas
         for idx in range(self.current_state.width):
             for idy in range(self.current_state.height):
@@ -89,6 +138,10 @@ class TkGUI:
                 canvas.itemconfig(cell_tag, fill=color)
 
     def start(self, initial_state):
+        """
+        TODO...
+        """
+
         # Reset the canvas (dimensions and number of cells)
         self.canvas.config(width=initial_state.width * self.cell_size,
                            height=initial_state.height * self.cell_size)
@@ -113,20 +166,53 @@ class TkGUI:
         # Set the next alarm
         self.canvas.after(self.timestep, self.update_state)
 
-    def open_state_file(self, file_path):
+    def select_state_file(self):
+        """
+        TODO...
+        """
+
         # Check and parse the file
-        # TODO
+
+        # FILE_TYPES = [(label1, pattern1), (label2, pattern2), ...]
+        FILE_TYPES = [
+                    ('JSON Files', '.json'),
+                    ('All Files', '.*')
+                ]
+
+        HOME = os.path.expanduser("~")
+
+        path = tk.filedialog.askopenfilename(parent=self.root,
+                                             filetypes=FILE_TYPES,     # optional
+                                             defaultextension='.json', # optional
+                                             initialdir=HOME,          # optional
+                                             #initialfile='demo.json',  # optional
+                                             title='Select your file') # optional
+
+        self.open_state_file(path)
+
+    def open_state_file(self, file_path):
+        """
+        TODO...
+        """
+
+        # Check and parse the file
+        # TODO: check the file
+        with open(file_path, "r") as fd:
+            json_dict = json.load(fd)
+
+        initial_state = json_dict.initial_state
 
         self.start(initial_state)
 
 if __name__ == '__main__':
     gui = TkGUI()
 
+    # TODO
     initial_state = Grid(width=3, height=3)
     initial_state[0][1] = 1
     initial_state[1][1] = 1
     initial_state[2][1] = 1
-    #gui.start(initial_state)
+    gui.start(initial_state)
 
 # Ce module utilise les fonctions "métier" suivantes
 # - ca.get_initial_state()
