@@ -53,8 +53,8 @@ class TkGUI:
         # GUI parameters ##############
 
         self.time_step = 500               # in ms
-        self.cell_size = 5                 # in pixels
-        self.cell_margin = 0               # in pixels
+        self.cell_size = 8                 # in pixels
+        self.cell_margin = 1               # in pixels
         self.cell_alive_color = "black"
         self.cell_dead_color = "white"
         self.background_color = "white"   # canvas background color
@@ -65,33 +65,33 @@ class TkGUI:
         self.root = tk.Tk()   # TODO
 
         self.canvas = tk.Canvas(self.root)
-        self.canvas.pack(padx=10, pady=10)
+        self.canvas.pack(padx=5, pady=5)
 
         # Make a menubar ##############
 
         # Create a toplevel menu
-        menubar = tk.Menu(root)
+        menubar = tk.Menu(self.root)
 
         # Create a pulldown menu
         file_menu = tk.Menu(menubar, tearoff=0)
         file_menu.add_command(label="Open...", command=self.select_state_file)
         file_menu.add_separator()
-        file_menu.add_command(label="Exit", command=root.quit)
+        file_menu.add_command(label="Exit", command=self.root.quit)
 
         menubar.add_cascade(label="File", menu=file_menu)
 
-        # Create a pulldown menu
-        help_menu = tk.Menu(menubar, tearoff=0)
-        help_menu.add_command(label="About...", command=callback)
-
-        menubar.add_cascade(label="Help", menu=help_menu)
+#        # Create a pulldown menu
+#        help_menu = tk.Menu(menubar, tearoff=0)
+#        help_menu.add_command(label="About...", command=callback)
+#
+#        menubar.add_cascade(label="Help", menu=help_menu)
 
         # Display the menu
         # The config method is used to attach the menu to the root window. The
         # contents of that menu is used to create a menubar at the top of the root
         # window. There is no need to pack the menu, since it is automatically
         # displayed by Tkinter.
-        root.config(menu=menubar)
+        self.root.config(menu=menubar)
 
         # Make rules ##################
 
@@ -100,10 +100,11 @@ class TkGUI:
         # Set the initial state #######
 
         self.current_state = None
+        self.next_alarm_id = None
 
-        # Tk event loop ###############
-
-        # TODO or move it outside the constructor ???)
+    def run(self):
+        # Tk event loop
+        # TODO ???
         self.root.mainloop()
 
     def update_state(self):
@@ -116,7 +117,7 @@ class TkGUI:
         self.draw_current_state()
 
         # Set the next alarm
-        self.canvas.after(self.timestep, self.update_state)
+        self.next_alarm_id = self.canvas.after(self.time_step, self.update_state)
 
     def draw_current_state(self):
         """
@@ -133,14 +134,22 @@ class TkGUI:
                 else:
                     cell_color = self.cell_alive_color
 
-                cell_tag = "{}x{}".format(idx, idy)
+                cell_tag = "({},{})".format(idx, idy)
 
-                canvas.itemconfig(cell_tag, fill=color)
+                self.canvas.itemconfig(cell_tag, fill=cell_color)
 
     def start(self, initial_state):
         """
         TODO...
         """
+
+        # Clear the canvas (remove all shapes)
+        self.canvas.delete(tk.ALL)
+
+        # Remove the next alarm
+        if self.next_alarm_id is not None:
+            self.canvas.after_cancel(self.next_alarm_id)
+            self.next_alarm_id = None
 
         # Reset the canvas (dimensions and number of cells)
         self.canvas.config(width=initial_state.width * self.cell_size,
@@ -148,14 +157,15 @@ class TkGUI:
 
         for idx in range(initial_state.width):
             for idy in range(initial_state.height):
-                tags = ("cell", "{}x{}".format(idx, idy))
+                tags = ("cell", "({},{})".format(idx, idy))
 
-                canvas.create_rectangle(self.cell_size * idx,       # x1
-                                        self.cell_size * idy,       # y1
-                                        self.cell_size * (idx + 1), # x2
-                                        self.cell_size * (idy + 1), # y2
-                                        tag=tags,
-                                        width=self.cell_margin)
+                self.canvas.create_rectangle(self.cell_size * idx,       # x1
+                                             self.cell_size * idy,       # y1
+                                             self.cell_size * (idx + 1), # x2
+                                             self.cell_size * (idy + 1), # y2
+                                             tag=tags,
+                                             outline=self.background_color,
+                                             width=self.cell_margin)
 
         # Update the current state
         self.current_state = initial_state
@@ -164,7 +174,7 @@ class TkGUI:
         self.draw_current_state()
 
         # Set the next alarm
-        self.canvas.after(self.timestep, self.update_state)
+        self.next_alarm_id = self.canvas.after(self.time_step, self.update_state)
 
     def select_state_file(self):
         """
@@ -200,34 +210,28 @@ class TkGUI:
         with open(file_path, "r") as fd:
             json_dict = json.load(fd)
 
-        initial_state = json_dict.initial_state
+        initial_state_list = json_dict["initial_state"]
+        initial_state = Grid(grid=initial_state_list)
 
         self.start(initial_state)
 
 if __name__ == '__main__':
     gui = TkGUI()
 
-    # TODO
-    initial_state = Grid(width=3, height=3)
+    # Default initial state
+    initial_state = Grid(width=32, height=32)
     initial_state[0][1] = 1
     initial_state[1][1] = 1
     initial_state[2][1] = 1
+
+    initial_state[10][1] = 1
+    initial_state[11][1] = 1
+    initial_state[12][1] = 1
+
+    initial_state[0][11] = 1
+    initial_state[1][11] = 1
+    initial_state[2][11] = 1
     gui.start(initial_state)
 
-# Ce module utilise les fonctions "métier" suivantes
-# - ca.get_initial_state()
-#   appelé à l'initialisation de la gui, notement pour définir la taille de la grille et le nombre de cellule
-# - ca.next_state(current_state)
-
-# ou mieux (?): "ca" devient "rules" et l'état initial est géré par la gui (ie supprime ca.get_initial_state)
-
-# L'objet "state" échangé avec la classe métier n'est qu'un nested tuple (ou liste ?) (à 2 dimensions) contenant des 0 et des 1 => pas besoin d'installer numpy
-# ou mieux (?)https://docs.python.org/3/library/array.html
-
-# Paramètres de la GUI:
-# - taille en pixel des cellules
-# - valeur du timestep en ms
-# - export vers des fichiers PS ?
-# - classe "métier"
-
-# L'état initial (et les règles ?) sont écrites dans un fichier JSON, choisi avec argparse ou via la GUI et passé au constructeur de la classe métier
+    # Launch the main loop
+    gui.run()
