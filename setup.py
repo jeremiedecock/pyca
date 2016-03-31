@@ -89,7 +89,7 @@ setup(author='Jeremie DECOCK',
       maintainer='Jeremie DECOCK',
       maintainer_email='jd.jdhp@gmail.com',
 
-      name='py-ca',
+      name='cellular-automata',
       description='A lightweight cellular automata framework',
       long_description=get_long_description(),
       url='http://www.jdhp.org/',
