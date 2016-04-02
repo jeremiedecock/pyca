@@ -40,7 +40,7 @@ from ca import __version__ as VERSION
 from setuptools import setup, find_packages
 
 # See :  http://pypi.python.org/pypi?%3Aaction=list_classifiers
-CLASSIFIERS = ['Development Status :: 5 - Production/Stable',
+CLASSIFIERS = ['Development Status :: 4 - Beta',
                'Intended Audience :: Science/Research',
                'License :: OSI Approved :: MIT License',
                'Natural Language :: English',

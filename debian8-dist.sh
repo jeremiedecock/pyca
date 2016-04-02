@@ -22,7 +22,7 @@ mkdir -p debian/DEBIAN
 cat > debian/DEBIAN/control << EOF
 Package: $NAME
 Version: $VERSION
-Section: libs
+Section: Mathematics
 Priority: optional
 Maintainer: Jérémie DECOCK <jd.jdhp@gmail.com>
 Architecture: all
