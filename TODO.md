@@ -6,7 +6,9 @@
 - [ ] Improve performances with http://effbot.org/tkinterbook/canvas.htm#performance-issues ?
 - [ ] Implement an auto-reset mode (TkGUI.auto_reset)
 - [ ] Implement a random initial state mode
-- [ ] Add examples
+- [ ] Open examples from command line
+- [ ] Remember the former opened path
+- [ ] Add examples: http://www.conwaylife.com/wiki/Category:Methuselahs, ...
 - [ ] Add unit tests
 - [ ] Add docstrings
 - [ ] Add sphinx doc
