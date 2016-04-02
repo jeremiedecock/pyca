@@ -11,6 +11,8 @@ A lightweight Cellular Automata Framework written in Python.
 Related links
 =============
 
+* http://www.conwaylife.com/wiki/
+* http://www.argentum.freeserve.co.uk/lex.htm
 * http://www.labri.fr/perso/nrougier/teaching/numpy/numpy.html#the-game-of-life
 
 License
