@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.1 (2016-04-01)
+0.1 (2016-04-03)
 ----------------
 
 Initial version of the three main modules:
