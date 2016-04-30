@@ -4,7 +4,7 @@
 
 - [x] Choose a name: Python package="ca", Debian package="python3-ca", PyPI="cellular-automata", launch script="pyca", long name="Python Cellular Automata", github="pyca"
 - [ ] Improve performances with http://effbot.org/tkinterbook/canvas.htm#performance-issues ?
-- [ ] Implement an auto-reset mode (TkGUI.auto_reset)
+- [x] Implement an auto-reset mode (TkGUI.auto_reset)
 - [ ] Implement a random initial state mode
 - [ ] Open examples from command line
 - [ ] Remember the former opened path
