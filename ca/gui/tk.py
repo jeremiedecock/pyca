@@ -59,6 +59,7 @@ class TkGUI:
         self.cell_dead_color = "white"
         self.background_color = "white"   # canvas background color
         self.export_canvas = False
+        self.auto_reset = False
 
         # Make widgets ################
 
@@ -99,6 +100,7 @@ class TkGUI:
 
         # Set the initial state #######
 
+        self.initial_state = None
         self.current_state = None
         self.next_alarm_id = None
 
@@ -112,7 +114,12 @@ class TkGUI:
         TODO...
         """
 
-        self.current_state = self.rules.next_state(self.current_state)
+        next_state = self.rules.next_state(self.current_state)
+
+        if self.auto_reset and (self.current_state == next_state):
+            self.start(self.initial_state)
+
+        self.current_state = next_state
 
         self.draw_current_state()
 
@@ -142,6 +149,8 @@ class TkGUI:
         """
         TODO...
         """
+
+        self.initial_state = initial_state
 
         # Clear the canvas (remove all shapes)
         self.canvas.delete(tk.ALL)
